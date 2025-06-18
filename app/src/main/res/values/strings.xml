@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">KotlinIndividual</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_forget_password">ForgetPasswordActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_update_product">UpdateProductActivity</string>
+    <string name="title_activity_add_product">AddProductActivity</string>
+    <string name="title_activity_list_view">ListViewActivity</string>
+    <string name="title_activity_add_to_cart">AddToCartActivity</string>
 </resources>
