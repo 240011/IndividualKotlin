@@ -52,21 +52,23 @@ import com.example.kotlinindividual.viewmodel.ProductViewModel
 
 class AddProductActivity : ComponentActivity() {
     lateinit var imageUtils: ImageUtils
-    var selectedImageUri by mutableStateOf<Uri?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        imageUtils = ImageUtils(this, this)
-        imageUtils.registerLaunchers { uri ->
-            selectedImageUri = uri
-        }
+
         setContent {
+            val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
+
+            imageUtils = ImageUtils(this, this)
+            imageUtils.registerLaunchers { uri ->
+                selectedImageUri.value = uri
+            }
+
             AddProductBody(
-                selectedImageUri = selectedImageUri,
+                selectedImageUri = selectedImageUri.value,
                 onPickImage = { imageUtils.launchImagePicker() },
                 onBackPressed = {
-                    // Navigate back to NavigationActivity
                     val intent = Intent(this, NavigationActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
@@ -76,6 +78,7 @@ class AddProductActivity : ComponentActivity() {
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

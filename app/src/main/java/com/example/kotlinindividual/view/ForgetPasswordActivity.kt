@@ -6,27 +6,19 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.kotlinindividual.R
 import com.example.kotlinindividual.repository.UserRepositoryImpl
 import com.example.kotlinindividual.viewmodel.UserViewModel
-
-import kotlinx.coroutines.flow.callbackFlow
 
 class ForgetPasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,33 +39,37 @@ fun forgetBody() {
     val activity = context as Activity
 
     var email by remember { mutableStateOf("") }
+
     Scaffold { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // ✅ Insert logo at the top
+            Image(
+                painter = painterResource(id = R.drawable.logo), // Replace with your actual logo resource
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(120.dp)
+                    .padding(bottom = 24.dp)
+            )
+
             OutlinedTextField(
                 value = email,
-                onValueChange = {
-                    email = it
-                },
-                placeholder = {
-                    Text("abc@gmail.com")
-                },
+                onValueChange = { email = it },
+                placeholder = { Text("abc@gmail.com") },
+                label = { Text("Enter your registered email") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Button(
                 onClick = {
                     userViewModel.forgetPassword(email) { success, message ->
-                        if (success) {
-                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                            activity?.finish()
-                        } else {
-                            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-
-                        }
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                        if (success) activity.finish()
                     }
                 },
                 modifier = Modifier

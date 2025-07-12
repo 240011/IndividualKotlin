@@ -1,4 +1,5 @@
-import android.annotation.SuppressLint
+package com.example.kotlinindividual.view
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -9,11 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,9 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.kotlinindividual.R
-import com.example.kotlinindividual.view.ListViewActivity
-import com.example.kotlinindividual.view.LoginActivity
-import com.example.kotlinindividual.view.NavigationActivity
 import kotlinx.coroutines.delay
 
 class SplashActivity : ComponentActivity() {
@@ -40,29 +34,23 @@ class SplashActivity : ComponentActivity() {
         }
     }
 
-    @SuppressLint("commitPreEdits")
     @Composable
     fun SplashBody() {
         val context = LocalContext.current
         val activity = context as Activity
 
-        val sharedPreferences = context.getSharedPreferences("User ", Context.MODE_PRIVATE)
-        val localEmail: String = sharedPreferences.getString("email", "").toString()
-        Log.d("email", localEmail)
+        val sharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+        val localEmail = sharedPreferences.getString("email", "") ?: ""
 
         LaunchedEffect(Unit) {
-            delay(3000) // Delay for 3 seconds
-            if (localEmail.isEmpty()) {
-                // Navigate to NewActivity if email is empty
-                val intent = Intent(context, LoginActivity::class.java)
-                context.startActivity(intent)
-                activity.finish()
+            delay(3000)
+            val target = if (localEmail.isEmpty()) {
+                LoginActivity::class.java
             } else {
-                // Navigate to NavigationActivity if email is not empty
-                val intent = Intent(context, NavigationActivity::class.java)
-                context.startActivity(intent)
-                activity.finish()
+                NavigationActivity::class.java
             }
+            context.startActivity(Intent(context, target))
+            activity.finish()
         }
 
         Scaffold { padding ->
@@ -74,13 +62,12 @@ class SplashActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Display the app logo
                 Image(
-                    painter = painterResource(R.drawable.logo), // Ensure this is the correct drawable resource
+                    painter = painterResource(R.drawable.logo),
                     contentDescription = "App Logo",
                     modifier = Modifier
-                        .size(150.dp) // Set the size of the logo
-                        .padding(bottom = 16.dp) // Add some space below the logo
+                        .size(150.dp)
+                        .padding(bottom = 16.dp)
                 )
                 CircularProgressIndicator()
             }
@@ -89,7 +76,7 @@ class SplashActivity : ComponentActivity() {
 
     @Preview
     @Composable
-    fun PreviewSplashActivity() {
+    fun PreviewSplashBody() {
         SplashBody()
     }
 }

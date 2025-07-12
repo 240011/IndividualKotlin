@@ -1,13 +1,13 @@
 package com.example.kotlinindividual.view
 
 import android.app.Activity
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,19 +19,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.example.kotlinindividual.R
 import com.example.kotlinindividual.model.UserModel
 import com.example.kotlinindividual.repository.UserRepositoryImpl
 import com.example.kotlinindividual.viewmodel.UserViewModel
-import java.util.*
 
 class Register : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,12 +49,11 @@ class Register : ComponentActivity() {
 
 @Composable
 fun RegisterBody(innerPaddingValues: PaddingValues) {
-    val repository = remember { UserRepositoryImpl() }
     val userViewModel = remember { UserViewModel(UserRepositoryImpl()) }
     var firstName by remember { mutableStateOf("") }
     var lastname by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") } // Added password state
+    var password by remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf("Select Country") }
@@ -73,6 +74,18 @@ fun RegisterBody(innerPaddingValues: PaddingValues) {
             .background(color = Color.LightGray)
     ) {
         Spacer(modifier = Modifier.height(50.dp))
+
+        // LOGO at the top
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "App Logo",
+            modifier = Modifier
+                .size(100.dp)
+                .align(Alignment.CenterHorizontally),
+            contentScale = ContentScale.Fit
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "Register",
@@ -112,7 +125,7 @@ fun RegisterBody(innerPaddingValues: PaddingValues) {
             onValueChange = { password = it },
             placeholder = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation() // Mask the password input
+            visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -156,11 +169,6 @@ fun RegisterBody(innerPaddingValues: PaddingValues) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
-
-
-        Spacer(modifier = Modifier.height(20.dp))
-
         Text("Gender")
         Row(verticalAlignment = Alignment.CenterVertically) {
             RadioButton(selected = gender == "Male", onClick = { gender = "Male" })
@@ -185,21 +193,16 @@ fun RegisterBody(innerPaddingValues: PaddingValues) {
 
         Button(
             onClick = {
-                userViewModel.register(email, password ) { success, message, userId ->
+                userViewModel.register(email, password) { success, message, userId ->
                     if (success) {
                         val userModel = UserModel(
-                            userId, email, firstName, lastname,"Male", selectedOptionText,selectedOptionText
+                            userId, email, firstName, lastname, gender, selectedOptionText, selectedOptionText
                         )
-                        userViewModel.addUserToDatabase(userId,userModel){
-                                success,message->
-                            if(success){
-                                Toast.makeText(context,message, Toast.LENGTH_LONG).show()
-                            }else{
-                                Toast.makeText(context,message, Toast.LENGTH_LONG).show()
-                            }
+                        userViewModel.addUserToDatabase(userId, userModel) { successDb, msgDb ->
+                            Toast.makeText(context, msgDb, Toast.LENGTH_LONG).show()
                         }
                     } else {
-                        Toast.makeText(context,message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     }
                 }
             },
@@ -208,20 +211,17 @@ fun RegisterBody(innerPaddingValues: PaddingValues) {
             Text("Register")
         }
 
-
         Spacer(modifier = Modifier.height(20.dp))
 
+        // Centered "Already have an Account? Sign In"
         Text(
             text = "Already have an Account? Sign In",
             color = Color.Blue,
             modifier = Modifier
-                .align(Alignment.End)
+                .align(Alignment.CenterHorizontally)
                 .clickable {
-                    // Handle sign-in navigation
                     val intent = Intent(context, LoginActivity::class.java)
                     context.startActivity(intent)
-                    // To destroy activity
-                    // activity.finish()
                 }
         )
     }

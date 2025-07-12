@@ -8,14 +8,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,30 +18,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -130,82 +103,94 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
     LaunchedEffect(selectedIndex) {
         cartViewModel.getCartItems()
     }
-
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                bottomNavItems.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        icon = { Icon(item.icon, contentDescription = item.label) },
-                        label = { Text(item.label) },
-                        selected = selectedIndex == index,
-                        onClick = { selectedIndex = index }
-                    )
-                }
-            }
-        },
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("Lugaloom",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 25.sp)
-                },
-                actions = {
-                    IconButton(onClick = { selectedIndex = 1 }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
+        Scaffold(
+            bottomBar = {
+                NavigationBar {
+                    bottomNavItems.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            icon = { Icon(item.icon, contentDescription = item.label) },
+                            label = { Text(item.label) },
+                            selected = selectedIndex == index,
+                            onClick = { selectedIndex = index }
                         )
                     }
-
-                    // SHOPPING CART ICON WITH NAVIGATION TO AddToCartActivity
-                    IconButton(
-                        onClick = {
-                            // Navigate to AddToCartActivity when shopping cart is clicked
-                            val intent = Intent(context, AddToCartActivity::class.java)
-                            context.startActivity(intent)
-
-                            // Optional: Show toast for feedback
-                            Toast.makeText(context, "Opening Cart", Toast.LENGTH_SHORT).show()
+                }
+            },
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Image(
+                                painter = painterResource(R.drawable.logo), // Replace with your logo resource
+                                contentDescription = "Logo",
+                                modifier = Modifier.size(40.dp) // Adjust size as needed
+                            )
+                            Text("Lugaloom",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 25.sp)
                         }
-                    ) {
-                        BadgedBox(
-                            badge = {
-                                if (cartItems.isNotEmpty()) {
-                                    Badge {
-                                        Text(cartItems.size.toString())
-                                    }
-                                }
+                    },
+                    actions = {
+                        IconButton(onClick = { selectedIndex = 1 }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search"
+                            )
+                        }
+
+                        // Profile Icon
+                        IconButton(onClick = {
+                            val intent = Intent(context, EditProfileActivity::class.java)
+                            context.startActivity(intent)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Person,
+                                contentDescription = "Profile"
+                            )
+                        }
+
+                        // SHOPPING CART ICON WITH NAVIGATION TO CartScreen
+                        IconButton(
+                            onClick = {
+                                selectedIndex = 1
                             }
                         ) {
+                            BadgedBox(
+                                badge = {
+                                    if (cartItems.isNotEmpty()) {
+                                        Badge {
+                                            Text(cartItems.size.toString())
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ShoppingCart,
+                                    contentDescription = "Shopping Cart - Click to view cart"
+                                )
+                            }
+                        }
+
+                        IconButton(onClick = {
+                            Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
+                        }) {
                             Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "Shopping Cart - Click to view cart"
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings"
+                            )
+                        }
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { activity.finish() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back"
                             )
                         }
                     }
-
-                    IconButton(onClick = {
-                        Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { activity.finish() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
+                )
+            },
+    floatingActionButton = {
             if (selectedIndex == 0) { // Only show FAB on home screen
                 FloatingActionButton(onClick = {
                     val intent = Intent(context, AddProductActivity::class.java)
@@ -220,13 +205,14 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .background(Color(0xFFE1F5FE)) // Set background color for all pages
         ) {
             when (selectedIndex) {
                 0 -> DashboardBody(
                     viewModel = viewModel,
                     onCartUpdated = { cartViewModel.getCartItems() }
                 )
-                1 -> SearchScreen(
+                1 -> CartScreen(
                     viewModel = viewModel,
                     onCartUpdated = { cartViewModel.getCartItems() }
                 )
@@ -240,6 +226,8 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
 // NEW: Categories Screen with ListView functionality
 @Composable
 fun CategoriesScreen() {
+    val context = LocalContext.current
+
     val images = listOf(
         R.drawable.tshirt,
         R.drawable.longcoat,
@@ -291,7 +279,18 @@ fun CategoriesScreen() {
                 ) {
                     items(images.size) { index ->
                         Card(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    // ✅ Navigate to AddToCartActivity on click
+                                    val intent = Intent(context, AddToCartActivity::class.java)
+                                    context.startActivity(intent)
+                                    Toast.makeText(
+                                        context,
+                                        "${names[index]} clicked",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -330,7 +329,17 @@ fun CategoriesScreen() {
                     items(images.size) { index ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .clickable {
+                                    val intent = Intent(context, AddToCartActivity::class.java)
+                                    context.startActivity(intent)
+                                    Toast.makeText(
+                                        context,
+                                        "${names[index]} clicked",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                         ) {
                             Image(
                                 painter = painterResource(images[index]),
@@ -338,7 +347,7 @@ fun CategoriesScreen() {
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(80.dp)
-                                    .clip(shape = CircleShape)
+                                    .clip(CircleShape)
                             )
                             Text(
                                 text = names[index],
@@ -354,7 +363,7 @@ fun CategoriesScreen() {
 }
 
 @Composable
-fun SearchScreen(
+fun CartScreen(
     viewModel: ProductViewModel,
     onCartUpdated: () -> Unit = {}
 ) {
@@ -406,24 +415,26 @@ fun ProfileScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text("Profile Screen", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        Text("User profile and settings will be displayed here")
+        Text("User  profile and settings will be displayed here")
 
-        // Add some profile actions
+        // Edit Profile Button
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Quick Actions", fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    // ANOTHER WAY TO ACCESS CART FROM PROFILE
                     IconButton(onClick = {
                         val intent = Intent(context, AddToCartActivity::class.java)
                         context.startActivity(intent)
@@ -437,7 +448,17 @@ fun ProfileScreen() {
                     }) {
                         Icon(Icons.Default.Add, contentDescription = "Add Product")
                     }
+
+                    // Edit Profile Button
+                    IconButton(onClick = {
+                        val intent = Intent(context, EditProfileActivity::class.java)
+                        context.startActivity(intent)
+                    }) {
+                        Icon(Icons.Default.Edit, contentDescription = "Edit Profile")
+                    }
                 }
+
+                Text("Tap edit to modify your profile", fontSize = 12.sp)
             }
         }
     }

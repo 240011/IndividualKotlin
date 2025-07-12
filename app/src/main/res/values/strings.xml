@@ -11,4 +11,5 @@
     <string name="title_activity_add_to_cart">AddToCartActivity</string>
     <string name="title_activity_edit_profile">EditProfileActivity</string>
     <string name="title_activity_poduct_card_with_add_to_cart">PoductCardWithAddToCart</string>
+    <string name="title_activity_splash_activity.kt">SplashActivity.kt</string>
 </resources>
