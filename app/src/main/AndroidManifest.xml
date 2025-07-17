@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -16,12 +16,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinIndividual"
         tools:replace="android:fullBackupContent"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name="ProductPreviewActivity.MainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.KotlinIndividual" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".view.ProductCardWithAddToCart"
             android:exported="true"
             android:label="@string/title_activity_poduct_card_with_add_to_cart"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +43,7 @@
             android:name=".view.EditProfileActivity"
             android:exported="true"
             android:label="@string/title_activity_edit_profile"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +63,7 @@
             android:name=".view.ListViewActivity"
             android:exported="true"
             android:label="@string/title_activity_list_view"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -63,7 +74,7 @@
             android:name=".view.AddProductActivity"
             android:exported="true"
             android:label="@string/title_activity_add_product"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -74,7 +85,7 @@
             android:name=".view.Register"
             android:exported="true"
             android:label="@string/title_activity_register"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -85,7 +96,7 @@
             android:name=".view.NavigationActivity"
             android:exported="true"
             android:label="@string/title_activity_navigation"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -101,7 +112,7 @@
             android:name=".view.UpdateProductActivity"
             android:exported="true"
             android:label="@string/title_activity_update_product"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -112,7 +123,7 @@
             android:name=".view.SplashActivity"
             android:exported="true"
             android:label="@string/title_activity_splash"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -123,7 +134,7 @@
             android:name=".view.ForgetPasswordActivity"
             android:exported="true"
             android:label="@string/title_activity_forget_password"
-            android:theme="@style/Theme.KotlinIndividual">
+            android:theme="@style/Theme.KotlinIndividual" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

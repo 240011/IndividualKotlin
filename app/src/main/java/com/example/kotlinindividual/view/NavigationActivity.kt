@@ -536,6 +536,18 @@ fun DashboardBody(
                                 ) {
                                     Icon(Icons.Default.Delete, contentDescription = "Delete")
                                 }
+                                IconButton(
+                                    onClick = {
+                                        val intent = Intent(context, AddToCartActivity::class.java)
+                                        intent.putExtra("productId", "${eachProduct?.productId}")
+                                        context.startActivity(intent)
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        contentColor = Color.Blue
+                                    )
+                                ) {
+                                    Icon(Icons.Default.ShoppingCart, contentDescription = "Cart")
+                                }
                             }
                         }
                     }
