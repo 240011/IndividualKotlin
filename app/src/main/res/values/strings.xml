@@ -13,4 +13,5 @@
     <string name="title_activity_poduct_card_with_add_to_cart">PoductCardWithAddToCart</string>
     <string name="title_activity_splash_activity.kt">SplashActivity.kt</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_order">OrderActivity</string>
 </resources>

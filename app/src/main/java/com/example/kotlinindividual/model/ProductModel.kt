@@ -6,7 +6,4 @@ data class ProductModel(
     var productPrice: Double =0.0,
     var productDescription : String ="",
     var image : String =""
-) {
-
-
-}
+)

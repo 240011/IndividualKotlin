@@ -20,12 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,7 +72,8 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
         BottomNavItem("Home", Icons.Default.Home),
         BottomNavItem("Search", Icons.Default.Search),
         BottomNavItem("Categories", Icons.Default.List),
-        BottomNavItem("Profile", Icons.Default.Person)
+        BottomNavItem("Profile", Icons.Default.Person),
+        BottomNavItem("Orders", Icons.Default.List) // New orders tab
     )
 
     var selectedIndex by remember { mutableStateOf(initialSelectedIndex) }
@@ -103,94 +99,103 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
     LaunchedEffect(selectedIndex) {
         cartViewModel.getCartItems()
     }
-        Scaffold(
-            bottomBar = {
-                NavigationBar {
-                    bottomNavItems.forEachIndexed { index, item ->
-                        NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) },
-                            selected = selectedIndex == index,
-                            onClick = { selectedIndex = index }
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                bottomNavItems.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        icon = { Icon(item.icon, contentDescription = item.label) },
+                        label = { Text(item.label) },
+                        selected = selectedIndex == index,
+                        onClick = {
+                            if (index == 4) { // Orders tab
+                                val intent = Intent(context, OrderActivity::class.java)
+                                context.startActivity(intent)
+                                selectedIndex = initialSelectedIndex // Reset to previous index
+                            } else {
+                                selectedIndex = index
+                            }
+                        }
+                    )
+                }
+            }
+        },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.logo), // Replace with your logo resource
+                            contentDescription = "Logo",
+                            modifier = Modifier.size(40.dp) // Adjust size as needed
+                        )
+                        Text("Lugaloom",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 25.sp)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { selectedIndex = 1 }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Search"
+                        )
+                    }
+
+                    // Profile Icon
+                    IconButton(onClick = {
+                        val intent = Intent(context, EditProfileActivity::class.java)
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile"
+                        )
+                    }
+
+                    // SHOPPING CART ICON
+                    IconButton(
+                        onClick = {
+                            selectedIndex = 1
+                        }
+                    ) {
+                        BadgedBox(
+                            badge = {
+                                if (cartItems.isNotEmpty()) {
+                                    Badge {
+                                        Text(cartItems.size.toString())
+                                    }
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = "Shopping Cart"
+                            )
+                        }
+                    }
+
+                    IconButton(onClick = {
+                        Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings"
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { activity.finish() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back"
                         )
                     }
                 }
-            },
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(R.drawable.logo), // Replace with your logo resource
-                                contentDescription = "Logo",
-                                modifier = Modifier.size(40.dp) // Adjust size as needed
-                            )
-                            Text("Lugaloom",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 25.sp)
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { selectedIndex = 1 }) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search"
-                            )
-                        }
-
-                        // Profile Icon
-                        IconButton(onClick = {
-                            val intent = Intent(context, EditProfileActivity::class.java)
-                            context.startActivity(intent)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "Profile"
-                            )
-                        }
-
-                        // SHOPPING CART ICON WITH NAVIGATION TO CartScreen
-                        IconButton(
-                            onClick = {
-                                selectedIndex = 1
-                            }
-                        ) {
-                            BadgedBox(
-                                badge = {
-                                    if (cartItems.isNotEmpty()) {
-                                        Badge {
-                                            Text(cartItems.size.toString())
-                                        }
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ShoppingCart,
-                                    contentDescription = "Shopping Cart - Click to view cart"
-                                )
-                            }
-                        }
-
-                        IconButton(onClick = {
-                            Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings"
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { activity.finish() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-                )
-            },
-    floatingActionButton = {
+            )
+        },
+        floatingActionButton = {
             if (selectedIndex == 0) { // Only show FAB on home screen
                 FloatingActionButton(onClick = {
                     val intent = Intent(context, AddProductActivity::class.java)
@@ -216,13 +221,13 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
                     viewModel = viewModel,
                     onCartUpdated = { cartViewModel.getCartItems() }
                 )
-                2 -> CategoriesScreen() // NEW: ListView functionality integrated here
+                2 -> CategoriesScreen()
                 3 -> ProfileScreen()
+                // Orders case not needed here as it's handled by navigation
             }
         }
     }
 }
-
 // NEW: Categories Screen with ListView functionality
 @Composable
 fun CategoriesScreen() {
