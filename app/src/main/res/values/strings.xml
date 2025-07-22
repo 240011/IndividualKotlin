@@ -14,4 +14,5 @@
     <string name="title_activity_splash_activity.kt">SplashActivity.kt</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_order">OrderActivity</string>
+    <string name="title_activity_wishlist_activity.kt">WishlistActivity.kt</string>
 </resources>
