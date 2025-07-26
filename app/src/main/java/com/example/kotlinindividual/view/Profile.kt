@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun Profile(){
     Column(
-        modifier = Modifier.fillMaxSize().background(color = Color.Yellow)
+        modifier = Modifier.fillMaxSize().background(color = Color.Blue)
     ) {
 
     }

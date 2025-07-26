@@ -226,7 +226,7 @@ fun LoginBody() {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(RoundedCornerShape(100.dp))
+                        .clip(RoundedCornerShape(110.dp))
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -237,7 +237,7 @@ fun LoginBody() {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(RoundedCornerShape(100.dp))
+                        .clip(RoundedCornerShape(110.dp))
                 )
             }
         }
