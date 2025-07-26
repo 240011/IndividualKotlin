@@ -54,7 +54,8 @@ fun ListViewBody() {
         R.drawable.sweater,
         R.drawable.pant,
         R.drawable.coat,
-        R.drawable.jacket
+        R.drawable.jacket ,
+        R.drawable.pant
     )
     val names = listOf(
         "T-Shirt",
@@ -62,7 +63,8 @@ fun ListViewBody() {
         "Sweater",
         "Pant",
         "Coat",
-        "Jacket"
+        "Jacket",
+        "Pant"
     )
 
     Scaffold { innerPadding ->
