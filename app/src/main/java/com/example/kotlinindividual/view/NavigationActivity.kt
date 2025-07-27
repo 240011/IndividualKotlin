@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.kotlinindividual.R
 import com.example.kotlinindividual.repository.ProductRepositoryImpl
 import com.example.kotlinindividual.repository.CartRepositoryImpl
@@ -44,21 +46,16 @@ class NavigationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        // Get the selected tab from intent (if coming from cart)
-        val selectedTab = intent.getIntExtra("selected_tab", 0)
-
-        setContent {
-            NavigationBody(initialSelectedIndex = selectedTab)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Refresh data when returning to this activity
         val selectedTab = intent.getIntExtra("selected_tab", 0)
         setContent {
-            NavigationBody(initialSelectedIndex = selectedTab)
+            MaterialTheme(colorScheme = lightColorScheme(
+                primary = Color(0xFF0D47A1),
+                secondary = Color(0xFF64B5F6),
+                background = Color(0xFFE3F2FD),
+                surface = Color.White
+            )) {
+                NavigationBody(initialSelectedIndex = selectedTab)
+            }
         }
     }
 }
@@ -73,7 +70,7 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
         BottomNavItem("Search", Icons.Default.Search),
         BottomNavItem("Categories", Icons.Default.List),
         BottomNavItem("Profile", Icons.Default.Person),
-        BottomNavItem("Orders", Icons.Default.List) // New orders tab
+        BottomNavItem("Orders", Icons.Default.List)
     )
 
     var selectedIndex by remember { mutableStateOf(initialSelectedIndex) }
@@ -82,20 +79,15 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
 
     val repo = remember { ProductRepositoryImpl() }
     val viewModel = remember { ProductViewModel(repo) }
-
-    // Add cart functionality
     val cartRepo = remember { CartRepositoryImpl() }
     val cartViewModel = remember { CartViewModel(cartRepo) }
     val cartItems by cartViewModel.cartItems.observeAsState(initial = emptyList())
-
     val products by viewModel.allProducts.observeAsState(initial = emptyList())
 
     LaunchedEffect(Unit) {
         viewModel.getAllProducts()
         cartViewModel.getCartItems()
     }
-
-    // Refresh cart when returning from other activities
     LaunchedEffect(selectedIndex) {
         cartViewModel.getCartItems()
     }
@@ -109,13 +101,10 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
                         label = { Text(item.label) },
                         selected = selectedIndex == index,
                         onClick = {
-                            if (index == 4) { // Orders tab
-                                val intent = Intent(context, OrderActivity::class.java)
-                                context.startActivity(intent)
-                                selectedIndex = initialSelectedIndex // Reset to previous index
-                            } else {
-                                selectedIndex = index
-                            }
+                            if (index == 4) {
+                                context.startActivity(Intent(context, OrderActivity::class.java))
+                                selectedIndex = initialSelectedIndex
+                            } else selectedIndex = index
                         }
                     )
                 }
@@ -125,81 +114,47 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(R.drawable.logo), // Replace with your logo resource
-                            contentDescription = "Logo",
-                            modifier = Modifier.size(40.dp) // Adjust size as needed
-                        )
-                        Text("Lugaloom",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 25.sp)
+                        Image(painter = painterResource(R.drawable.logo), contentDescription = "Logo", modifier = Modifier.size(40.dp))
+                        Text("Lugaloom", fontWeight = FontWeight.Bold, fontSize = 25.sp)
                     }
                 },
                 actions = {
                     IconButton(onClick = { selectedIndex = 1 }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search"
-                        )
+                        Icon(Icons.Default.Search, contentDescription = "Search")
                     }
-
-                    // Profile Icon
                     IconButton(onClick = {
-                        val intent = Intent(context, EditProfileActivity::class.java)
-                        context.startActivity(intent)
+                        context.startActivity(Intent(context, EditProfileActivity::class.java))
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Profile"
-                        )
+                        Icon(Icons.Default.Person, contentDescription = "Profile")
                     }
-
-                    // SHOPPING CART ICON
-                    IconButton(
-                        onClick = {
-                            selectedIndex = 1
-                        }
-                    ) {
-                        BadgedBox(
-                            badge = {
-                                if (cartItems.isNotEmpty()) {
-                                    Badge {
-                                        Text(cartItems.size.toString())
-                                    }
+                    IconButton(onClick = { selectedIndex = 1 }) {
+                        BadgedBox(badge = {
+                            if (cartItems.isNotEmpty()) {
+                                Badge(containerColor = Color.Red) {
+                                    Text(cartItems.size.toString())
                                 }
                             }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "Shopping Cart"
-                            )
+                        }) {
+                            Icon(Icons.Default.ShoppingCart, contentDescription = "Cart")
                         }
                     }
-
                     IconButton(onClick = {
                         Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
-                        )
+                        Icon(Icons.Default.Settings, contentDescription = "Settings")
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = { activity.finish() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
         },
         floatingActionButton = {
-            if (selectedIndex == 0) { // Only show FAB on home screen
+            if (selectedIndex == 0) {
                 FloatingActionButton(onClick = {
-                    val intent = Intent(context, AddProductActivity::class.java)
-                    context.startActivity(intent)
+                    context.startActivity(Intent(context, AddProductActivity::class.java))
                 }) {
                     Icon(Icons.Default.Add, contentDescription = "Add Product")
                 }
@@ -210,24 +165,18 @@ fun NavigationBody(initialSelectedIndex: Int = 0) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color(0xFFE1F5FE)) // Set background color for all pages
+                .background(Color(0xFFE1F5FE))
         ) {
             when (selectedIndex) {
-                0 -> DashboardBody(
-                    viewModel = viewModel,
-                    onCartUpdated = { cartViewModel.getCartItems() }
-                )
-                1 -> CartScreen(
-                    viewModel = viewModel,
-                    onCartUpdated = { cartViewModel.getCartItems() }
-                )
+                0 -> DashboardBody(viewModel = viewModel, onCartUpdated = { cartViewModel.getCartItems() })
+                1 -> CartScreen(viewModel = viewModel, onCartUpdated = { cartViewModel.getCartItems() })
                 2 -> CategoriesScreen()
                 3 -> ProfileScreen()
-                // Orders case not needed here as it's handled by navigation
             }
         }
     }
 }
+
 // NEW: Categories Screen with ListView functionality
 @Composable
 fun CategoriesScreen() {
