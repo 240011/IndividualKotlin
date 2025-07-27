@@ -98,7 +98,7 @@ fun ListViewBody() {
 
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     items(images.size) { index ->
                         Column(

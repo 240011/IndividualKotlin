@@ -51,7 +51,7 @@ fun ProductCardWithAddToCart(
                 contentDescription = product.productName,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .height(205.dp),
                 contentScale = ContentScale.Crop
             )
 
