@@ -43,6 +43,7 @@ android {
 dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation(libs.androidx.core.ktx)
+    testImplementation("Org.mockito:mockito-core:5.6.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -54,6 +55,9 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
+    androidTestImplementation("androidx.test:runner:1.2.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
