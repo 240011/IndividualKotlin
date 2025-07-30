@@ -66,7 +66,7 @@ class SplashActivity : ComponentActivity() {
                     painter = painterResource(R.drawable.logo),
                     contentDescription = "App Logo",
                     modifier = Modifier
-                        .size(150.dp)
+                        .size(160.dp)
                         .padding(bottom = 16.dp)
                 )
                 CircularProgressIndicator()
